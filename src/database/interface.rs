@@ -4,7 +4,8 @@ use anyhow::Result;
 
 use crate::terminal::{Position, Terminal};
 
-use super::{command, buffers, mega_command::MegaCommand};
+use super::{command, buffers, mega_command::MegaCommand,
+            sql_command::SqlCommandResult};
 
 
 pub struct Pager {
@@ -54,25 +55,26 @@ impl Pager {
             if self.should_quit {
                 break;
             }
+            let _ = Terminal::print_prompt();
             let input_buffer = Self::read_input();
-            match input_buffer {
-                Ok(InputBuffer) => {
-                    if InputBuffer.buffer[0] == b'.' {
-                        match MegaCommand::do_mega_command(&InputBuffer) {
-                            Ok(MegaCommand::Exit) => { self.should_quit = true; },
-                            Ok(MegaCommand::Success) => (),
-                            Ok(MegaCommand::UnknownCommand) => {
-                                Terminal::print(format!("Unknown command entered: {:?}\n", String::from_utf8(InputBuffer.buffer.clone())))?;
-                            },
-                            Err(_) => (),
-                        }
-                    } else {
-                        Terminal::print(format!("Command entered: {:?}\n", String::from_utf8(InputBuffer.buffer.clone())))?;                        
+            if let Ok(input_value) = &input_buffer {
+                if input_value.buffer[0] == b'.' {
+                    match MegaCommand::do_mega_command(&input_value) {
+                        Ok(MegaCommand::Exit) => { self.should_quit = true; },
+                        Ok(MegaCommand::Success) => (),
+                        Ok(MegaCommand::UnknownCommand) => {
+                            Terminal::print(format!("Unknown command entered: {:?}\n", String::from_utf8(input_value.buffer.clone())))?;
+                        },
+                        Err(_) => (),
+                    }
+                } else {
+                    Terminal::print(format!("Command entered: {:?}\n", String::from_utf8(input_value.buffer.clone())))?;                        
+                    
+                        SqlCommandResult::initiate_conversion(input_value)?;
                     }
                 }
-                Err(e) => {
+            if let Err(e) = &input_buffer {
 
-                }
             }
         }
         Ok(())

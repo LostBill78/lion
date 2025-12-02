@@ -1,7 +1,7 @@
 use std::io::{Write, stdout};
 
 use crossterm::{Command, cursor::MoveTo, queue, style::Print, terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode}};
-
+const NAME: &str = env!("CARGO_PKG_NAME");
 pub struct Position {
     pub col: usize,
     pub row: usize,
@@ -33,6 +33,11 @@ impl Terminal {
     }
     pub fn print(text: String) -> anyhow::Result<()> {
         Self::queue_command(Print(text))?;
+        Ok(())
+    }
+    pub fn print_prompt() -> anyhow::Result<()> {
+        Self::print(format!("{} > ", NAME))?;
+        Self::execute()?;
         Ok(())
     }
     pub fn move_cursor_to(position: Position) -> anyhow::Result<()> {
