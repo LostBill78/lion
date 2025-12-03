@@ -1,4 +1,6 @@
 use anyhow::Result;
+use crate::terminal::Terminal;
+
 use super::buffers::InputBuffer;
 use super::parser::Dictionary;
 
@@ -16,7 +18,7 @@ pub enum Command {
     select,
     create,
     join,
-
+    unknown,
 }
 
 #[derive(Debug)]
@@ -37,12 +39,15 @@ impl SqlCommandResult {
         // Send input to the lexer for breakdown
 
         //? should this be sent to the parser first and let parse handle each item in turn
-        let lexer_result = Dictionary::input_parser(&input_buffer)?;
-        match lexer_result.command {
-            Command::insert => todo!(),
-            Command::select => todo!(),
-            Command::create => todo!(),
-            Command::join => todo!(),
+        let parser_result = Dictionary::input_parser(&input_buffer)?;
+        match parser_result.command {
+            Command::insert => {
+                let _ = Terminal::print_line("Found command: (\"insert\")\n".to_owned());
+            },
+            Command::select => (),
+            Command::create => (),
+            Command::join => (),
+            Command::unknown => todo!(),
         }
         Ok(())
     }

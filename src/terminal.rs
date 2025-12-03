@@ -35,6 +35,11 @@ impl Terminal {
         Self::queue_command(Print(text))?;
         Ok(())
     }
+    pub fn print_line(text: String) -> anyhow::Result<()> {
+        Self::print(text);
+        Self::execute();
+        Ok(())
+    }
     pub fn print_prompt() -> anyhow::Result<()> {
         Self::print(format!("{} > ", NAME))?;
         Self::execute()?;
