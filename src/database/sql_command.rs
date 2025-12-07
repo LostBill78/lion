@@ -1,4 +1,5 @@
 use anyhow::Result;
+use crate::database::lexer::Token;
 use crate::terminal::Terminal;
 
 use super::buffers::InputBuffer;
@@ -41,13 +42,23 @@ impl SqlCommandResult {
         //? should this be sent to the parser first and let parse handle each item in turn
         let parser_result = Dictionary::input_parser(&input_buffer)?;
         match parser_result.command {
-            Command::insert => {
-                let _ = Terminal::print_line("Found command: (\"insert\")\n".to_owned());
+            Token::Insert => {
+                let _ = Terminal::print_line(format!("found command: {}\n", "insert"));
             },
-            Command::select => (),
-            Command::create => (),
-            Command::join => (),
-            Command::unknown => todo!(),
+            Token::LeftParen => todo!(),
+            Token::RightParen => todo!(),
+            Token::Comma => todo!(),
+            Token::And => todo!(),
+            Token::Or => todo!(),
+            Token::Select => {
+                let _ = Terminal::print_line(format!("found command: {}\n", "select"));
+            },
+            Token::Create => todo!(),
+            Token::Into => todo!(),
+            Token::Where => todo!(),
+            Token::Values => todo!(),
+            Token::Equal => todo!(),
+            Token::Chars(_) => todo!(),
         }
         Ok(())
     }
