@@ -68,11 +68,16 @@ impl Pager {
                         Err(_) => (),
                     }
                 } else {
-                    Terminal::print(format!("Command entered: {:?}\n", String::from_utf8(input_value.buffer.clone())))?;                        
-                    
-                        SqlCommandResult::initiate_conversion(input_value)?;
+                    match SqlCommandResult::initiate_conversion(input_value) {
+                        Ok(_) => { continue; },
+                        Err(e) => {
+                            let _ = Terminal::print(format!("An error has occurred: **{}\n", e));
+                            let _ = Terminal::print(format!("Command Entered: {:?}\n", String::from_utf8(input_value.buffer.clone()).unwrap()));
+                            continue;
+                        },
                     }
                 }
+            }
             if let Err(e) = &input_buffer {
 
             }
