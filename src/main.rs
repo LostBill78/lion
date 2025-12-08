@@ -7,6 +7,8 @@ use std::{env, process::exit};
 
 use database::interface::Pager;
 
+use crate::terminal::Terminal;
+
 
 fn main() {
     // We must require a file name to be entered
@@ -16,5 +18,11 @@ fn main() {
         exit(1);
     }
     // Next connect to the interface
-    Pager::new(&args[1]).unwrap().control().unwrap();
+    let mut pager = Pager::new(&args[1]).unwrap();
+    match pager.control() {
+        Ok(_) => (),
+        Err(e) => { 
+            Terminal::print(format!("An error occured: {}\n", e));
+        },
+    }
 }
