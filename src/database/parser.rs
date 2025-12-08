@@ -1,12 +1,16 @@
 
 use anyhow::*;
+use crate::database::lexer::Token;
+use crate::terminal::Terminal;
+
 use super::sql_command::Command;
 use super::buffers::InputBuffer;
-use super::lexer::Lexer;
+// use super::lexer::Lexer;
+use super::lexer::*;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Dictionary {
-    pub command: super::lexer::Token,
+    pub command: Token,
     // pub table_name: String,
     // pub columns: Vec<String>,
     // pub values: Vec<String>,        // convert eveything to Strings in the database
@@ -14,20 +18,65 @@ pub struct Dictionary {
 
 
 impl Dictionary {
-    pub fn input_parser(input_buffer: &InputBuffer) -> Result<Dictionary> {
-        let lexer_result = Lexer::tokenizer(input_buffer);
+    pub fn new_parser() -> Self {
+        Self::default()
+    }
+    pub fn input_parser(&mut self, input_buffer: &InputBuffer) -> Result<Dictionary> {
+        let mut lexer_result = Lexer::tokenizer(input_buffer);
 
-        // let mut command: Command = Command::select;
-        // if input_buffer.buffer.starts_with(b"insert")  {
-        //     command = Command::insert;
-        // }
+        // Need to complete some syntax checking
+        let be = self.do_syntax_check(&lexer_result)?;
 
-        
         Ok(Dictionary {
             command: lexer_result[0].clone(),
             // table_name: (),
             // columns: (),
             // values: (),
         })
+    }
+
+    fn do_syntax_check(&mut self, tokens: &Vec<Token>) -> Result<Dictionary> {
+
+        let command = tokens[0].clone();
+        match command {
+            Token::Insert => {
+                self.syntax_check_insert(&tokens)?;
+            },
+            Token::Select => {
+                self.syntax_check_select(&tokens)?;
+            },
+            Token::Create => {
+                self.syntax_check_create(&tokens)?;
+            },
+            Token::LeftParen |
+            Token::RightParen |
+            Token::Comma |
+            Token::And |
+            Token::Or |
+            Token::Into |
+            Token::Where |
+            Token::From |
+            Token::Values |
+            Token::Equal |
+            Token::Chars(_) |
+            Token::Unknown => (),
+        }
+
+        Ok(Dictionary {
+            command: command,
+
+        })
+    }
+    fn syntax_check_insert(&self, tokens: &Vec<Token>) -> Result<()> {
+
+        Ok(())
+    }
+    fn syntax_check_select(&self, tokens: &Vec<Token>) -> Result<()> {
+
+        Ok(())
+    }
+    fn syntax_check_create(&self, tokens: &Vec<Token>) -> Result<()> {
+        
+        Ok(())
     }
 }

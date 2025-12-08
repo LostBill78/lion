@@ -40,25 +40,32 @@ impl SqlCommandResult {
         // Send input to the lexer for breakdown
 
         //? should this be sent to the parser first and let parse handle each item in turn
-        let parser_result = Dictionary::input_parser(&input_buffer)?;
+        let mut parser = Dictionary::new_parser();
+        let parser_result = parser.input_parser(&input_buffer)?;
         match parser_result.command {
             Token::Insert => {
                 let _ = Terminal::print_line(format!("found command: {}\n", "insert"));
             },
-            Token::LeftParen => todo!(),
-            Token::RightParen => todo!(),
-            Token::Comma => todo!(),
-            Token::And => todo!(),
-            Token::Or => todo!(),
             Token::Select => {
                 let _ = Terminal::print_line(format!("found command: {}\n", "select"));
             },
-            Token::Create => todo!(),
-            Token::Into => todo!(),
-            Token::Where => todo!(),
-            Token::Values => todo!(),
-            Token::Equal => todo!(),
-            Token::Chars(_) => todo!(),
+            Token::Create => {
+                let _ = Terminal::print_line(format!("found command: {}\n", "create"));
+            },
+            Token::Chars(e) => {
+                let _ = Terminal::print_line(format!("{}\n",e));  
+            },
+            Token::LeftParen |
+            Token::RightParen |
+            Token::Comma |
+            Token::And |
+            Token::Or |
+            Token::Into |
+            Token::Where |
+            Token::From |
+            Token::Values |
+            Token::Equal |
+            Token::Unknown => (),
         }
         Ok(())
     }

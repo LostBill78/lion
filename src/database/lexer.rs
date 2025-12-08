@@ -10,8 +10,16 @@ use super::buffers::InputBuffer;
 
 const INSERT: &str = "insert";
 const SELECT: &str = "select";
+const INTO: &str = "into";
+const WHERE: &str = "where";
+const CREATE: &str = "create";
+const FROM: &str = "from";
+const VALUES: &str = "values";
+const EQUALS: &str = ".eq.";
+const AND: &str = ".and.";
+const OR: &str = ".or.";
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum Token {
     LeftParen,
     RightParen,
@@ -23,9 +31,12 @@ pub enum Token {
     Create,
     Into,
     Where,
+    From,
     Values,
     Equal,
     Chars(String),
+    #[default]
+    Unknown,
 }
 
 pub struct Lexer {
@@ -52,17 +63,16 @@ impl Lexer {
                         .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_ascii_alphabetic())))
                         .collect::<String>();
 
-                    match s {
+                    let s_lower: &str = &s.to_lowercase();
+                    match s_lower {
                         INSERT => tokens.push(Token::Insert),
                         SELECT => tokens.push(Token::Select),
-
-                        &_ => tokens.push(Token::Chars(s.to_string())),
+                        CREATE => tokens.push(Token::Create),
+                        INTO => tokens.push(Token::Into),
+                        VALUES => tokens.push(Token::Values),
+                        FROM => tokens.push(Token::From),
+                        &_ => tokens.push(Token::Chars(s.to_string())), // Want to leave case here.
                     }
-                    // if s.to_lowercase() == "insert" {
-                    //     tokens.push(Token::Insert);
-                    // } else {
-                    //     tokens.push(Token::Chars(s.to_string()));
-                    // }
                 },
                 _ => {},
             }
