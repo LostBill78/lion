@@ -18,6 +18,8 @@ const VALUES: &str = "values";
 const EQUALS: &str = ".eq.";
 const AND: &str = ".and.";
 const OR: &str = ".or.";
+const DATABASE: &str = "database";
+const TABLE: &str = "table";
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum Token {
@@ -34,6 +36,8 @@ pub enum Token {
     From,
     Values,
     Equal,
+    Table,
+    Database,
     Chars(String),
     #[default]
     Unknown,
@@ -58,9 +62,9 @@ impl Lexer {
                 ')' => tokens.push(Token::RightParen),
                 ',' => tokens.push(Token::Comma),
 
-                'a'..'z' | 'A'..'Z' => {
+                'a'..'z' | 'A'..'Z' | '0'..'9' | '.' => {
                     let s: &str = &iter::once(ch)
-                        .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_ascii_alphabetic())))
+                        .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_alphanumeric() || (*s == '.'))))
                         .collect::<String>();
 
                     let s_lower: &str = &s.to_lowercase();
@@ -71,7 +75,16 @@ impl Lexer {
                         INTO => tokens.push(Token::Into),
                         VALUES => tokens.push(Token::Values),
                         FROM => tokens.push(Token::From),
-                        &_ => tokens.push(Token::Chars(s.to_string())), // Want to leave case here.
+                        DATABASE => tokens.push(Token::Database),
+                        TABLE => tokens.push(Token::Table),
+                        
+                        &_ => {
+                            if tokens.len() < 1 {
+                                tokens.push(Token::Unknown);
+                            } else {
+                                tokens.push(Token::Chars(s.to_string())); // Want to leave case here.
+                            }
+                        },
                     }
                 },
                 _ => {},

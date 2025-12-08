@@ -48,18 +48,7 @@ impl Dictionary {
             Token::Create => {
                 self.syntax_check_create(&tokens)?;
             },
-            Token::LeftParen |
-            Token::RightParen |
-            Token::Comma |
-            Token::And |
-            Token::Or |
-            Token::Into |
-            Token::Where |
-            Token::From |
-            Token::Values |
-            Token::Equal |
-            Token::Chars(_) |
-            Token::Unknown => (),
+            _ => (),
         }
 
         Ok(Dictionary {
@@ -68,7 +57,20 @@ impl Dictionary {
         })
     }
     fn syntax_check_insert(&self, tokens: &Vec<Token>) -> Result<()> {
+        
 
+        for index in 0..tokens.len() {
+            let my_token = &tokens[index];
+            if (index == 1 && *my_token != Token::Into) {
+                bail!("Syntax err on entry!");
+            }
+            if index == 2 {
+                // Test valid table name
+                if let Token::Chars(e) = my_token {
+                    let _ = Terminal::print(format!("look for table = {}\n", e));
+                }
+            }
+        }
         Ok(())
     }
     fn syntax_check_select(&self, tokens: &Vec<Token>) -> Result<()> {
@@ -76,7 +78,14 @@ impl Dictionary {
         Ok(())
     }
     fn syntax_check_create(&self, tokens: &Vec<Token>) -> Result<()> {
-        
+        for index in 0..tokens.len() {
+            let my_token = &tokens[index];
+            if (index == 1 && 
+                (*my_token != Token::Table && 
+                    *my_token != Token::Database)) {
+                bail!("Syntax err on entry!");
+            }
+        }
         Ok(())
     }
 }

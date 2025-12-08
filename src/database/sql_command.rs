@@ -52,20 +52,11 @@ impl SqlCommandResult {
             Token::Create => {
                 let _ = Terminal::print_line(format!("found command: {}\n", "create"));
             },
-            Token::Chars(e) => {
-                let _ = Terminal::print_line(format!("{}\n",e));  
+            Token::Unknown => {
+                let _ = Terminal::print(format!("unknown command: {:#?}\n", 
+                    String::from_utf8(input_buffer.buffer.clone()).unwrap()));
             },
-            Token::LeftParen |
-            Token::RightParen |
-            Token::Comma |
-            Token::And |
-            Token::Or |
-            Token::Into |
-            Token::Where |
-            Token::From |
-            Token::Values |
-            Token::Equal |
-            Token::Unknown => (),
+            _ => (),
         }
         Ok(())
     }
