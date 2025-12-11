@@ -4,8 +4,8 @@ use anyhow::Result;
 
 use crate::terminal::{Position, Terminal};
 
-use super::{buffers, mega_command::MegaCommand,
-            sql_command::SqlCommandResult};
+use super::{buffers, commands::{mega_command::MegaCommand,
+            sql_command::SqlCommandResult}};
 
 
 pub struct Pager {

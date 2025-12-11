@@ -2,8 +2,8 @@ use anyhow::Result;
 use crate::database::tokenizer::lexer::Token;
 use crate::terminal::Terminal;
 
-use super::buffers::InputBuffer;
-use super::tokenizer::parser::Dictionary;
+use super::super::buffers::InputBuffer;
+use super::super::tokenizer::parser::Dictionary;
 
 #[derive(Debug)]
 pub enum Command {

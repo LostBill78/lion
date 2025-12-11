@@ -3,9 +3,9 @@ use anyhow::*;
 use crate::database::tokenizer::lexer::Token;
 use crate::terminal::Terminal;
 
-use super::super::sql_command::Command;
+use super::super::commands::sql_command::Command;
 use super::super::buffers::InputBuffer;
-// use super::lexer::Lexer;
+
 use super::lexer::*;
 
 #[derive(Debug, Default)]
