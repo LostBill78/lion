@@ -4,7 +4,7 @@ use anyhow::Result;
 
 use crate::terminal::{Position, Terminal};
 
-use super::{command, buffers, mega_command::MegaCommand,
+use super::{buffers, mega_command::MegaCommand,
             sql_command::SqlCommandResult};
 
 
@@ -69,7 +69,7 @@ impl Pager {
                     }
                 } else {
                     match SqlCommandResult::initiate_conversion(input_value) {
-                        Ok(_) => { continue; },
+                        Ok(command) => { SqlCommandResult::execute_command(&command); },
                         Err(e) => {
                             let _ = Terminal::print(format!("An error has occurred: **{}\n", e));
                             let _ = Terminal::print(format!("Command Entered: {:?}\n", String::from_utf8(input_value.buffer.clone()).unwrap()));

@@ -1,17 +1,9 @@
 use anyhow::Result;
-use crate::database::lexer::Token;
+use crate::database::tokenizer::lexer::Token;
 use crate::terminal::Terminal;
 
 use super::buffers::InputBuffer;
-use super::parser::Dictionary;
-
-#[derive(Debug, PartialEq, Clone)]
-pub enum Tokens {
-    LParen,
-    RParen,
-    Comma,
-    SemiColon,
-}
+use super::tokenizer::parser::Dictionary;
 
 #[derive(Debug)]
 pub enum Command {
@@ -36,7 +28,7 @@ pub struct SqlCommandResult {
 }
 
 impl SqlCommandResult {
-    pub fn initiate_conversion(input_buffer: &InputBuffer) -> Result<()> {
+    pub fn initiate_conversion(input_buffer: &InputBuffer) -> Result<Dictionary> {
         // Send input to the lexer for breakdown
 
         //? should this be sent to the parser first and let parse handle each item in turn
@@ -58,6 +50,11 @@ impl SqlCommandResult {
             },
             _ => (),
         }
+        Ok(parser_result)
+    }
+
+    pub fn execute_command(command: &Dictionary) -> Result<()> {
+
         Ok(())
     }
     

@@ -1,17 +1,17 @@
 
 use anyhow::*;
-use crate::database::lexer::Token;
+use crate::database::tokenizer::lexer::Token;
 use crate::terminal::Terminal;
 
-use super::sql_command::Command;
-use super::buffers::InputBuffer;
+use super::super::sql_command::Command;
+use super::super::buffers::InputBuffer;
 // use super::lexer::Lexer;
 use super::lexer::*;
 
 #[derive(Debug, Default)]
 pub struct Dictionary {
     pub command: Token,
-    // pub table_name: String,
+    pub table_name: String,
     // pub columns: Vec<String>,
     // pub values: Vec<String>,        // convert eveything to Strings in the database
 }
@@ -29,7 +29,7 @@ impl Dictionary {
 
         Ok(Dictionary {
             command: lexer_result[0].clone(),
-            // table_name: (),
+            table_name: "Unknown".to_string(),
             // columns: (),
             // values: (),
         })
@@ -41,18 +41,22 @@ impl Dictionary {
         match command {
             Token::Insert => {
                 self.syntax_check_insert(&tokens)?;
+                return self.build_insert_dictionary(&tokens);
             },
             Token::Select => {
                 self.syntax_check_select(&tokens)?;
+                return self.build_select_dictionary(&tokens);
             },
             Token::Create => {
                 self.syntax_check_create(&tokens)?;
+                return self.build_create_dictionary(&tokens);
             },
             _ => (),
         }
 
         Ok(Dictionary {
             command: command,
+            table_name: "Unknown".to_string(),
 
         })
     }
@@ -87,5 +91,34 @@ impl Dictionary {
             }
         }
         Ok(())
+    }
+
+    /*  Section Build Dictionary   */
+    fn build_insert_dictionary(&mut self, tokens: &Vec<Token>) -> Result<Dictionary> {
+
+        let my_table = tokens[2].clone();
+        let mut table_name = String::new();
+        if let Token::Chars(e) = my_table{
+            table_name = e;
+        }
+
+        Ok(Dictionary {
+            command: tokens[0].clone(),
+            table_name: table_name,
+        })
+    }
+    fn build_select_dictionary(&mut self, tokens: &Vec<Token>) -> Result<Dictionary> {
+
+        Ok(Dictionary {
+            command: tokens[0].clone(),
+            table_name: "Unknown".to_string(),
+        })
+    }
+    fn build_create_dictionary(&mut self, tokens: &Vec<Token>) -> Result<Dictionary> {
+
+        Ok(Dictionary {
+            command: tokens[0].clone(),
+            table_name: "Unknown".to_string(),
+        })
     }
 }

@@ -3,9 +3,12 @@
 
 pub mod interface;
 
-mod command;
 mod buffers;
 mod mega_command;
 mod sql_command;
-mod parser;
-mod lexer;
+
+mod tokenizer;
+pub use tokenizer::lexer;
+pub use tokenizer::parser;
+
+pub mod executer;
