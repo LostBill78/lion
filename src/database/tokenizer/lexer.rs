@@ -5,7 +5,7 @@ use anyhow::Result;
 
 use super::super::buffers::InputBuffer;
 
-
+/* Key Words comparison List */
 const INSERT: &str = "insert";
 const SELECT: &str = "select";
 const INTO: &str = "into";
@@ -21,6 +21,7 @@ const TABLE: &str = "table";
 const UPDATE: &str = "update";
 const SET: &str = "set";
 
+/* Key items to define how to execute the command */
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum Token {
     LeftParen,

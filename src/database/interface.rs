@@ -7,12 +7,15 @@ use crate::terminal::{Position, Terminal};
 use super::{buffers, commands::{mega_command::MegaCommand,
             sql_command::SqlCommandResult}};
 
+use super::ConnectDb;
+
 
 pub struct Pager {
     file_name: String,
     file_descriptor: i32,
     mega_command: MegaCommand,
     should_quit: bool,
+    connect: ConnectDb,
 }
 
 impl Default for Pager {
@@ -22,20 +25,24 @@ impl Default for Pager {
             file_descriptor: Default::default(),
             should_quit: false,
             mega_command: Default::default(),
+            connect: Default::default(),
         }
     }
 }
 
 impl Pager {
-    pub fn new(file_name: &str) -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let current_hook = take_hook();
         set_hook(Box::new(move |panic_info| {
             let _ = Terminal::terminate();
             current_hook(panic_info);
         }));
+        // Find and open the DB file
+        let connect = ConnectDb::connect_database()?;
         // create an instance of the interface 
         let mut pager = Self::default();
-        pager.file_name = String::from(file_name);
+        pager.connect = connect;
+        pager.file_name = pager.connect.file_name.clone();
         Terminal::initialize()?;
         // Handle the connection to the database
         let mut file = OpenOptions::new()
@@ -103,6 +110,7 @@ impl Pager {
 impl Drop for Pager {
     fn drop(&mut self) {
         if self.should_quit {
+            self.connect.close_database().unwrap();
             Terminal::terminate().unwrap();
             Terminal::print("Goodbye.\n".to_owned()).unwrap();
         }

@@ -15,3 +15,4 @@ pub use tokenizer::lexer;
 pub use tokenizer::parser;
 
 pub mod executer;
+pub use executer::ConnectDb;
