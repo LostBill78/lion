@@ -6,15 +6,6 @@ use super::super::buffers::InputBuffer;
 use super::super::tokenizer::parser::Dictionary;
 
 #[derive(Debug)]
-pub enum Command {
-    insert,
-    select,
-    create,
-    join,
-    unknown,
-}
-
-#[derive(Debug)]
 pub enum SqlResponse {
     Success,
     Table_full,
