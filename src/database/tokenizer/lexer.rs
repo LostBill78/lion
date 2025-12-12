@@ -20,20 +20,25 @@ const AND: &str = ".and.";
 const OR: &str = ".or.";
 const DATABASE: &str = "database";
 const TABLE: &str = "table";
+const UPDATE: &str = "update";
+const SET: &str = "set";
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum Token {
     LeftParen,
     RightParen,
+    Astric,
     Comma,
     And,
     Or,
     Insert,
+    Update,
     Select,
     Create,
     Into,
     Where,
     From,
+    Set,
     Values,
     Equal,
     Table,
@@ -61,6 +66,7 @@ impl Lexer {
                 '(' => tokens.push(Token::LeftParen),
                 ')' => tokens.push(Token::RightParen),
                 ',' => tokens.push(Token::Comma),
+                '*' => tokens.push(Token::Astric),
 
                 'a'..'z' | 'A'..'Z' | '0'..'9' | '.' => {
                     let s: &str = &iter::once(ch)
@@ -72,9 +78,11 @@ impl Lexer {
                         INSERT => tokens.push(Token::Insert),
                         SELECT => tokens.push(Token::Select),
                         CREATE => tokens.push(Token::Create),
+                        UPDATE => tokens.push(Token::Update),
                         INTO => tokens.push(Token::Into),
                         VALUES => tokens.push(Token::Values),
                         FROM => tokens.push(Token::From),
+                        SET => tokens.push(Token::Set),
                         DATABASE => tokens.push(Token::Database),
                         TABLE => tokens.push(Token::Table),
                         
@@ -93,11 +101,4 @@ impl Lexer {
 
         tokens
     }
-    // pub fn input_lexer(input_buffer: &InputBuffer) -> Result<Command>{
-    //     let mut result = Command::unknown;
-    //     if input_buffer.buffer.starts_with(b"insert") {
-    //         result = Command::insert;
-    //     }
-    //     Ok(result)
-    // }
 }

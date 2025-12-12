@@ -43,6 +43,10 @@ impl Dictionary {
                 self.syntax_check_insert(&tokens)?;
                 return self.build_insert_dictionary(&tokens);
             },
+            Token::Update => {
+                self.syntax_check_update(&tokens)?;
+                return self.build_insert_dictionary(&tokens);
+            },
             Token::Select => {
                 self.syntax_check_select(&tokens)?;
                 return self.build_select_dictionary(&tokens);
@@ -77,6 +81,9 @@ impl Dictionary {
         }
         Ok(())
     }
+    fn syntax_check_update(&self, tokens: &Vec<Token>) -> Result<()> {
+        Ok(())
+    }
     fn syntax_check_select(&self, tokens: &Vec<Token>) -> Result<()> {
 
         Ok(())
@@ -105,6 +112,13 @@ impl Dictionary {
         Ok(Dictionary {
             command: tokens[0].clone(),
             table_name: table_name,
+        })
+    }
+    fn build_update_dictionary(&mut self, tokens: &Vec<Token>) -> Result<Dictionary> {
+
+        Ok(Dictionary {
+            command: tokens[0].clone(),
+            table_name: "Unknown".to_string(),
         })
     }
     fn build_select_dictionary(&mut self, tokens: &Vec<Token>) -> Result<Dictionary> {
