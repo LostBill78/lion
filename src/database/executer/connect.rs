@@ -120,12 +120,22 @@ impl ConnectDb {
         let pepper = "Bill Hayes created my database   Number 1.0";
         
         page_ray[..pepper.len()].copy_from_slice(pepper.as_bytes());
+        page_ray[4095] = b'E';
 
         fs::write(self.file_name.clone(), &page_ray);
         // Return the resulting Page -- heap pointer.
         Ok(Page { content: page_ray } )
     }
 
+    pub fn write_data(&self, data: Vec<u8>) -> Result<()> {
+        let start_index = 4096 - data.len();
+        let end_index = 4096;
+        let mut destination = self.page1.content;
+        let mut page_slice = &mut destination[start_index..end_index];
+        page_slice.copy_from_slice(data.as_slice());
+        fs::write(self.file_name.clone(), self.page1.content);
+        Ok(())
+    }
     pub fn close_database(&self) -> Result<()> {
         // Add code when using BufWriter??
         // Make sure every update to database has been written

@@ -1,6 +1,6 @@
 use std::{fs::{File, OpenOptions}, io, os::fd::AsRawFd, panic::{set_hook, take_hook}};
 
-use anyhow::Result;
+use anyhow::{Result, bail};
 
 use crate::terminal::{Position, Terminal};
 
@@ -57,6 +57,9 @@ impl Pager {
     }
 
     pub fn control(&mut self) -> Result<()> {
+        if self.db_ok() == false {
+            bail!("Bad Database!");
+        }
         Terminal::move_cursor_to(Position {col: 0, row: 0})?;
         loop {
             if self.should_quit {
@@ -106,6 +109,10 @@ impl Pager {
             input_length:  bytes_read.saturating_sub(1) as u32,
         })
         
+    }
+
+    fn db_ok(&mut self) -> bool {
+        return true;
     }
 }
 
