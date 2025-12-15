@@ -39,3 +39,17 @@ pub struct Table {
     table_name: String,
     columns: Vec<Column>,
 }
+
+pub struct Page {
+    pub content: [u8; 4096],
+}
+impl Default for Page {
+    fn default() -> Self {
+        Self { content: [0; 4096] }
+    }
+}
+
+pub struct Pages {
+    pub pages: Vec<Page>,
+    pub num_pages: u8,
+}

@@ -49,7 +49,7 @@ impl Terminal {
         Self::queue_command(MoveTo(position.col as u16, position.row as u16))?;
         Ok(())
     }
-    fn execute() ->anyhow::Result<()> {
+    pub fn execute() ->anyhow::Result<()> {
         stdout().flush()?;
         Ok(())
     }

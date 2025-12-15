@@ -65,23 +65,25 @@ impl Pager {
             let _ = Terminal::print_prompt();
             let input_buffer = Self::read_input();
             if let Ok(input_value) = &input_buffer {
-                if input_value.buffer[0] == b'.' {
-                    match MegaCommand::do_mega_command(&input_value) {
-                        Ok(MegaCommand::Exit) => { self.should_quit = true; },
-                        Ok(MegaCommand::Success) => (),
-                        Ok(MegaCommand::UnknownCommand) => {
-                            Terminal::print(format!("Unknown command entered: {:?}\n", String::from_utf8(input_value.buffer.clone())))?;
-                        },
-                        Err(_) => (),
-                    }
-                } else {
-                    match SqlCommandResult::initiate_conversion(input_value) {
-                        Ok(command) => { SqlCommandResult::execute_command(&command); },
-                        Err(e) => {
-                            let _ = Terminal::print(format!("An error has occurred: **{}\n", e));
-                            let _ = Terminal::print(format!("Command Entered: {:?}\n", String::from_utf8(input_value.buffer.clone()).unwrap()));
-                            continue;
-                        },
+                if input_value.buffer.len() > 2 {
+                    if input_value.buffer[0] == b'.' {
+                        match MegaCommand::do_mega_command(&input_value) {
+                            Ok(MegaCommand::Exit) => { self.should_quit = true; },
+                            Ok(MegaCommand::Success) => (),
+                            Ok(MegaCommand::UnknownCommand) => {
+                                Terminal::print(format!("Unknown command entered: {:?}\n", String::from_utf8(input_value.buffer.clone())))?;
+                            },
+                            Err(_) => (),
+                        }
+                    } else {
+                        match SqlCommandResult::initiate_conversion(input_value) {
+                            Ok(command) => { SqlCommandResult::execute_command(&command); },
+                            Err(e) => {
+                                let _ = Terminal::print(format!("An error has occurred: **{}\n", e));
+                                let _ = Terminal::print(format!("Command Entered: {:?}\n", String::from_utf8(input_value.buffer.clone()).unwrap()));
+                                continue;
+                            },
+                        }
                     }
                 }
             }
