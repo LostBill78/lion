@@ -2,12 +2,12 @@
 #[allow(dead_code)]
 
 mod database;
-mod terminal;
+mod terminals;
 use std::{env, process::exit};
 
 use database::interface::Pager;
 
-use crate::terminal::Terminal;
+use crate::terminals::Terminal;
 
 
 fn main() {

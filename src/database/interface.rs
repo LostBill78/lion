@@ -2,7 +2,7 @@ use std::{fs::{File, OpenOptions}, io, os::fd::AsRawFd, panic::{set_hook, take_h
 
 use anyhow::{Result, bail};
 
-use crate::terminal::{Position, Terminal};
+use crate::terminals::{Position, Terminal};
 
 use super::{buffers, commands::{mega_command::MegaCommand,
             sql_command::SqlCommandResult}};

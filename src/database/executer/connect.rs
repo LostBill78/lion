@@ -3,7 +3,7 @@ use anyhow::{Result, bail};
 use bincode::decode_from_reader;
 use bitfield_struct::bitfield;
 use std::{env, fs::{self, File, OpenOptions}, io::{self, BufReader, Read}, path::{self, Path, PathBuf}};
-use crate::terminal::Terminal;
+use crate::terminals::Terminal;
 
 use super::super::buffers::Page;
 use serde::{Serialize, Deserialize};
