@@ -1,5 +1,5 @@
 #![allow(warnings)]
-#[allow(dead_code)]
+#![allow(dead_code)]
 
 mod database;
 mod terminals;

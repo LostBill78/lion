@@ -22,7 +22,7 @@ const UPDATE: &str = "update";
 const SET: &str = "set";
 
 /* Key items to define how to execute the command */
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Default)]
 pub enum Token {
     LeftParen,
     RightParen,
@@ -54,6 +54,7 @@ pub struct Lexer {
 impl Lexer {
     
     pub fn tokenizer(input_buffer: &InputBuffer) -> Vec<Token> {
+        let mut quote_string: bool = false;
         let mut tokens: Vec<Token> = Vec::new();
         let mut input: String = String::from_utf8(input_buffer.buffer.clone()).unwrap();
 
@@ -66,10 +67,12 @@ impl Lexer {
                 ')' => tokens.push(Token::RightParen),
                 ',' => tokens.push(Token::Comma),
                 '*' => tokens.push(Token::Astric),
+                '\"' => { quote_string = !quote_string; },
 
-                'a'..'z' | 'A'..'Z' | '0'..'9' | '.' => {
+                'a'..'z' | 'A'..'Z' | '0'..'9' | '.' | ' ' => {
                     let s: &str = &iter::once(ch)
-                        .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_alphanumeric() || (*s == '.'))))
+                        .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_alphanumeric() 
+                            || (*s == '.') || (quote_string && *s == ' '))))
                         .collect::<String>();
 
                     let s_lower: &str = &s.to_lowercase();
